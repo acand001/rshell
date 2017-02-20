@@ -50,7 +50,9 @@ exit.sh					-Test for the exit command within the application
 The following are known bugs in our application, which will be addressed in a future.
 ```
 1. After a comment(#) is detected additional commands are not captured
-2. The program iterates through some of the commands twice as it was the only way for us to capture left and right arguments
+2. The program iterates through some of the commands twice as it was the only way for us to capture left and right arguments properly.
+3. When exit command is preceded by commands it does not always exit from rshell.
+4. The program exhibts other abnormalities which we still have yet to define. This task will be taken up in the future.
 ```
 
 ## Contributors
