@@ -49,8 +49,8 @@ exit.sh					-Test for the exit command within the application
 
 The following are known bugs in our application, which will be addressed in a future.
 ```
-1. After a comment is detected additional commands are not captured
-2. 
+1. After a comment(#) is detected additional commands are not captured
+2. The program iterates through some of the commands twice as it was the only way for us to capture left and right arguments
 ```
 
 ## Contributors
