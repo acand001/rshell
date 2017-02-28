@@ -28,7 +28,7 @@ The following is example code which we used to created objects which would then 
 
 The following are instructions for installing and running rshell
 ```
-1. $ git clone  https://github.com/victormedel/CS100_Winter_2017
+1. $ git clone  https://github.com/victormedel/rshell.git
 2. $ cd rshell
 3. $ git checkout hw2
 4. $ make
