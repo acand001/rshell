@@ -72,17 +72,14 @@ single_command.sh	 	-Tests for single command inputs
 multi_command.sh		-Tests for multiple command inputs
 commented_command.sh	-Tests for commented  inputs
 exit.sh					-Test for the exit command within the application
+paranthesis.sh			-Test for commands within paranthesis
+test_command.sh			-Test for the test diffrent variation of the test command
 ```
 
 ## Features
 
-The following are known bugs in our application, which will be addressed in a future.
-```
-1. 
-2. 
-3. 
-4. 
-```
+After several hours of testing no known bugs appeared. Therefore, any bugs found by grader/tester will be considered "features."
+
 
 ## Contributors
 
