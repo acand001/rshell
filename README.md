@@ -2,26 +2,55 @@
 
 ## Synopsis
 
-The rshell program runs a Linux style command prompt which allows for the input of a single command or multiple commands utilizing semicolon, &&, or || as command connectors. Once the commands are entered they are executed in the order they were read and according to their command connectors. If and when a command fails rshell is designed to output and error message and return to the command prompt.
+The rshell program runs a Linux style command prompt which allows for the input of a single command or multiple commands utilizing semicolon, &&, or || as command connectors. The shell also allows, just as a basic Linux shell would, the input of paranthesis and the test command. Once the commands are entered they are executed in the order in which they were read and according to their command connectors and paranthesis precedence. If and when a command fails rshell is designed to output and error message and return to the command prompt.
 
-Example of command input:
+Some Examples of command input style:
 
 ```
 $ command [arguments] [connector]
+$ command [arguments] [connector] command [arguments]
+$ (command [arguments] [connector] command [arguments] [connectors]) [connector] (command [arguments] [connector] command [arguments] [connectors])
 ```
 
 ## Code Example
 
 Our code is constructed of vectors and objects which reads and executes shell commands in the following manner:
 
-The following is example code which we used to created objects which would then be evaluated and returned depending on their individual outcome.
+The following is example code which we used to parse the user input.
 ```
-	if(cnn.at(i) == "&&"){
-        Cmds* cmds1 = new Cmds(cmds.at(j));
-        j++;
-        Cmds* cmds2 = new Cmds(cmds.at(j));
-        And* A = new And(cmds1, cmds2);
-        A->execute();
+void parsQ(string s, queue<string>& cmds){   
+    string tmpStr;
+    
+    char_separator<char> sep(";||&&");
+    typedef tokenizer<char_separator<char> > mytok;
+    typedef mytok::iterator tok_it;
+    mytok tok(s, sep);
+    
+     for(tok_it i= tok.begin(); i != tok.end(); i++) {
+    
+        tmpStr = *i;
+        
+        //CHECKS IF STRING IS EMPTY
+        if(tmpStr == " "){
+            continue;
+        }
+        
+        
+         //Trims Leading space from string
+        if (tmpStr[0] == ' '){
+            tmpStr.erase(0,1);  
+        }
+        
+        chkExit(tmpStr);//CHECKING FOR EXIT
+        deleteCommentAfterHack(tmpStr);//CHECK COMMENT HASH #
+        
+        cmds.push(tmpStr);
+        
+    }
+    
+    tmpStr = "";
+    
+}
 ```
 
 ## Installation
@@ -45,14 +74,14 @@ commented_command.sh	-Tests for commented  inputs
 exit.sh					-Test for the exit command within the application
 ```
 
-## Known Bugs
+## Features
 
 The following are known bugs in our application, which will be addressed in a future.
 ```
-1. After a comment(#) is detected additional commands are not captured
-2. The program iterates through some of the commands twice as it was the only way for us to capture left and right arguments properly.
-3. When exit command is preceded by commands it does not always exit from rshell.
-4. The program exhibts other abnormalities which we still have yet to define. This task will be taken up in the future.
+1. 
+2. 
+3. 
+4. 
 ```
 
 ## Contributors

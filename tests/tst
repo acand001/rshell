@@ -1,0 +1,4 @@
+test -e main.cpp
+[ -e main.cpp ]
+test -e main.cpp
+[ -e main.cpp ]
