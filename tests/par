@@ -3,3 +3,4 @@
 echo hi && (echo hello && echo world)
 (echo me) && (echo you || echo us)
 (echo a || echo b) && echo c
+exit
