@@ -1,0 +1,5 @@
+cat < input
+cat < input > output
+cat < input >> output2
+cat < output > input
+exit

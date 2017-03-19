@@ -2,7 +2,7 @@
 
 ## Synopsis
 
-The rshell program runs a Linux style command prompt which allows for the input of a single command or multiple commands utilizing semicolon, &&, or || as command connectors. The shell also allows, just as a basic Linux shell would, the input of paranthesis and the test command. Once the commands are entered they are executed in the order in which they were read and according to their command connectors and paranthesis precedence. If and when a command fails rshell is designed to output and error message and return to the command prompt.
+The rshell program runs a Linux style command prompt which allows for the input of a single command or multiple commands utilizing semicolon, &&, or || as command connectors. The shell also allows, just as a basic Linux shell would, the input of paranthesis and the test command. Once the commands are entered they are executed in the order in which they were read and according to their command connectors and paranthesis precedence. Rshell also has the ability to handle pipes and redirectors along with any files within the existing directory. If and when a command fails rshell is designed to output and error message and return to the command prompt.
 
 Some Examples of command input style:
 
@@ -74,6 +74,8 @@ commented_command.sh	-Tests for commented  inputs
 exit.sh					-Test for the exit command within the application
 paranthesis.sh			-Test for commands within paranthesis
 test_command.sh			-Test for the test diffrent variation of the test command
+pipes.sh				-Test for commands combined with pipes
+redirector.sh			-Test for commands with redirectors <, >, and >>.
 ```
 
 ## Features
