@@ -40,20 +40,19 @@ stack<bool> myBools;
 stack<string> tempContainer;
 queue<string> connectorsBetweenParenthesis;
 queue<string> redirectors;
-
 bool boolean = false;
-
-
-
 vector<string> vecforPipe;
 
 
 //EXIT FUNCTION | CHECKS FOR EXIT IN COMMANDS
-void chkExit(string cmds){
+int chkExit(string cmds){
+    trim(cmds);
     if(cmds == "exit"){
         cout <<"Exiting Rshell..."<<endl;
         exit(0);
+        exit(0);
     }
+ 
 }
 
 
@@ -140,9 +139,13 @@ bool chkForTest( string& input,  vector<string>& temp ){
         tmpStr = *i;
         
          //Trims Leading space from string
-        if (tmpStr[0] == ' '){
-            tmpStr.erase(0,1);  
-        }
+         trim(tmpStr);
+         
+          chkExit(tmpStr);//CHECKING FOR EXIT
+         
+        // if (tmpStr[0] == ' '){
+        //     tmpStr.erase(0,1);  
+        // }
         temp.push_back(tmpStr);
       }
         tmpStr = "";
@@ -401,11 +404,11 @@ bool execute(string str ) {
 ///BOOL CHECK FUNCTION
 void boolChk(list<string>& connectors, queue<string>& insideQ){
     
+    string tmp;
+    tmp = insideQ.front();
+    trim(temp);
     
-    if(insideQ.front() == "exit") {
-        cout << "Exiting Rshell..."<<endl;
-        exit(0);
-    }
+    chkExit(tmp);//CHECKING FOR EXIT
     //cout <<endl;
     chkExit(insideQ.front());
     
@@ -728,6 +731,7 @@ void analyze(string& input){
 bool testCmd(string& input, queue<string>& tmpQ){
 
      string tmpStr;
+     chkExit(tmpStr);//CHECKING FOR EXIT
      parsQ(input, tmpQ);
      tmpStr = tmpQ.front();
      cout<<tmpStr<<endl;
@@ -859,6 +863,9 @@ string inOut;
             
             trim(input);
             
+            //CHECKING FOR EXIT
+            chkExit(input);
+            
             //REMOVE ALL COMMENTS FOLLOWED BY AND INCLUDING #
             string newInput = deleteCommentAfterHack(input);
             
@@ -883,7 +890,7 @@ string inOut;
                 
             }
             
-            
+         input="";   
             
         }
        
