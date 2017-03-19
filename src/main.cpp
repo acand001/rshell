@@ -1,6 +1,5 @@
 #include <iostream>
 #include <cstdlib>
-#include <cstring>
 #include <string>
 #include <vector>
 #include <sstream>
@@ -14,9 +13,18 @@
 #include <stdlib.h>
 #include <boost/tokenizer.hpp>
 #include <boost/algorithm/string.hpp>
+#include <boost/algorithm/string/trim.hpp>
 #include <queue>
 #include <stack>
 #include <list>
+#include <ostream>
+#include <fcntl.h>
+#include <queue>
+#include <stack>
+#include <list>
+using namespace std;
+using namespace boost;
+
 
 
 using namespace std;
@@ -31,8 +39,93 @@ queue<string> outsideQ;
 stack<bool> myBools;
 stack<string> tempContainer;
 queue<string> connectorsBetweenParenthesis;
+queue<string> redirectors;
 
 bool boolean = false;
+
+
+
+vector<string> vecforPipe;
+
+
+//EXIT FUNCTION | CHECKS FOR EXIT IN COMMANDS
+void chkExit(string cmds){
+    if(cmds == "exit"){
+        cout <<"Exiting Rshell..."<<endl;
+        exit(0);
+    }
+}
+
+
+//DELETES COMMENTS AFTER # <===== THIS MIGHT NEED SOME WORK!!!
+string deleteCommentAfterHack(string input){
+        //Here we check for the first element of the 
+        //string if # then step out of parsing
+    string mystr = input.substr(0, input.find("#", 0));
+
+    return mystr;
+
+}
+
+
+//EXTRACT IO CONNECTORS
+void ioConnQ(string& s, queue<string>& ioCnn){
+    
+    string tmpStr2;
+   // int tmp;
+        for(unsigned int i = 0; i < s.size(); i++){
+            
+            if(s[i] == '<'){
+                tmpStr2 = "<";
+                ioCnn.push(tmpStr2);
+                i++;
+            }else if(s[i] == '>' && s[i+1] == '>'){
+                tmpStr2 = ">>";
+                ioCnn.push(tmpStr2);
+                i++;
+            }else if(s[i] == '>'){
+                tmpStr2 = ">";
+                ioCnn.push(tmpStr2);
+            }else if(s[i] == '|'){
+                tmpStr2 = "|";
+                ioCnn.push(tmpStr2);
+            }
+    }
+}
+
+
+//REMOVE <, >, >> AND | FROM STRING
+void parsIOVec(string s, vector<string>& ioCmds){   
+    string tmpStr;
+    
+    char_separator<char> sep("<>|");
+    typedef tokenizer<char_separator<char> > mytok;
+    typedef mytok::iterator tok_it;
+    mytok tok(s, sep);
+    
+     for(tok_it i= tok.begin(); i != tok.end(); i++) {
+    
+        tmpStr = *i;
+        
+        //CHECKS IF STRING IS EMPTY
+        if(tmpStr == " "){
+            continue;
+        }
+
+         //Trims Leading space from string
+        trim(tmpStr);
+
+        
+        chkExit(tmpStr);//CHECKING FOR EXIT
+        deleteCommentAfterHack(tmpStr);//CHECK COMMENT HASH #
+        
+        ioCmds.push_back(tmpStr);
+        
+    }
+    
+    tmpStr = "";
+    
+}
 
 ///TEST CHECK FUNCTION
 bool chkForTest( string& input,  vector<string>& temp ){
@@ -170,27 +263,6 @@ bool chkForTest( string& input,  vector<string>& temp ){
     return false; ///ADDED THIS BECASE OF COMPILING ERROR -VM 
 }
 
-
-//EXIT FUNCTION | CHECKS FOR EXIT IN COMMANDS
-void chkExit(string& cmds){
-
-    if(cmds == "exit"){
-        cout <<"Exiting Rshell..."<<endl;
-        exit(0);
-    }
-}
-
-
-//DELETES COMMENTS AFTER # <===== THIS MIGHT NEED SOME WORK!!!
-string deleteCommentAfterHack(string input){
-        //Here we check for the first element of the 
-        //string if # then step out of parsing
-    string mystr = input.substr(0, input.find("#", 0));
-
-    return mystr;
-
-}
-
 //REMOVE SEMICOLON, ||, AND && FROM STRING
 void parsQ(string s, queue<string>& cmds){   
     string tmpStr;
@@ -211,9 +283,11 @@ void parsQ(string s, queue<string>& cmds){
         
         
          //Trims Leading space from string
-        if (tmpStr[0] == ' '){
-            tmpStr.erase(0,1);  
-        }
+        
+        trim(tmpStr);
+        // if (tmpStr[0] == ' '){
+        //     tmpStr.erase(0,1);  
+        // }
         
         chkExit(tmpStr);//CHECKING FOR EXIT
         deleteCommentAfterHack(tmpStr);//CHECK COMMENT HASH #
@@ -327,12 +401,21 @@ bool execute(string str ) {
 ///BOOL CHECK FUNCTION
 void boolChk(list<string>& connectors, queue<string>& insideQ){
     
+    
+    if(insideQ.front() == "exit") {
+        cout << "Exiting Rshell"<<endl;
+        exit(0);
+    }
+    cout <<endl;
+    chkExit(insideQ.front());
+    
     boolean = execute(insideQ.front());
     insideQ.pop();
     myBools.push(boolean);
     
     while(!connectors.empty()){    
         if(myBools.top() && (connectors.front() == "&&")) {
+            chkExit(insideQ.front());
             //can add another if here for exit
             boolean = execute(insideQ.front());
             myBools.push(boolean);
@@ -340,6 +423,7 @@ void boolChk(list<string>& connectors, queue<string>& insideQ){
             insideQ.pop();
         }
         else if(!myBools.top() && (connectors.front() == "||")) {
+            chkExit(insideQ.front());
             //can add another if here for exit
             //myBools.pop();
             boolean = execute(insideQ.front());
@@ -350,6 +434,7 @@ void boolChk(list<string>& connectors, queue<string>& insideQ){
         }    
         
         else if(connectors.front() == ";" ) {
+            chkExit(insideQ.front());
             //can add another if here for exit
             //myBools.pop();
             boolean = execute(insideQ.front());
@@ -651,10 +736,121 @@ bool testCmd(string& input, queue<string>& tmpQ){
     return true;
 }
 
+
+void piping(vector<string>& q, queue<string> &reDirect) {
+    //save stdin and stdout
+    int stdin = dup(0);
+    if(stdin < 0 ) perror("dup error");
+    int stdout = dup(0);
+    if( stdout < 0) perror("Dup error");
+    
+    int inputCmd;
+    int outputCmd;
+    if(reDirect.front() == "<") {
+        inputCmd = open(q.at(1).c_str(), O_RDONLY);
+        if(inputCmd < 0) 
+            perror("Opening Error");
+            q.erase(q.begin()+1);
+    }
+    else 
+        inputCmd = 0;
+    
+    if(reDirect.back() == ">") {
+         outputCmd = open(q.at(q.size()-1).c_str(), O_WRONLY | O_CREAT | O_TRUNC, 0666);
+        if(outputCmd < 0) 
+          perror("error in opening");
+        q.pop_back();
+    }
+    else if( reDirect.back() == ">>") {
+          outputCmd = open(q.at(q.size()-1).c_str(), O_WRONLY | O_CREAT | O_APPEND, 0666);
+          if(outputCmd < 0) {
+             perror("error in opening");
+           }
+           q.pop_back();
+    }
+    else
+    outputCmd = 1;
+    
+    int fd[2];
+    size_t i;
+    for(i = 0; i < q.size()-1; i++) {
+        if(pipe(fd) < 0) 
+            perror("Pipe error");
+        size_t pid;
+        pid = fork();
+        if(pid < 0)
+            perror("Frk error");
+        else if(pid == 0) {  //child process
+            if(dup2(inputCmd,0) < 0) {
+                perror("Dup2 Erorr");
+                exit(EXIT_FAILURE);
+            }
+            if(dup2(fd[1],1) < 0 )
+                perror("Error in dup2");
+            if(close(fd[1]) < 0 )
+                perror("Close Error");
+                execute(q.at(i));
+                exit(EXIT_FAILURE);
+        }
+        else {
+            if(close(fd[1]) < 0) 
+            perror("Close Error");
+            inputCmd = fd[0];
+        }
+    }
+    
+    if(dup2(inputCmd,0) < 0) {
+        perror("Dup2 error");
+    }
+    
+    size_t pid;
+    pid = fork();
+    if(pid < 0) {
+        perror("Fork Error");
+    }
+    else if (pid == 0) { //child process
+        if(outputCmd != STDOUT_FILENO) {
+            if(dup2(outputCmd,1) < 0) {
+                perror("Dup2 Error");
+            }
+            if(close(outputCmd) < 0) {
+                perror("Close error");
+            }
+        }
+        else
+        {
+            if(dup2(stdout, STDOUT_FILENO) < 0) {
+                perror("Dup2 Error");
+            }
+        }
+        //run execute function here
+        execute(q.at(q.size()-1));
+    }
+    else {
+        if(waitpid(pid,NULL,0) < 0) {
+            perror("Wait error");
+            exit(EXIT_FAILURE);
+        }
+    }
+    
+    // //restore using dup2 and close
+    if(dup2(stdout, 1) == -1)
+        perror("Error in Dup2");
+    if(dup2(stdin, 0) == -1)
+        perror("Error in Dup2");
+    if(close(stdout) == -1)
+        perror("Error Closing file");
+    if(close(stdin) == -1)
+         perror("Error Closing file");
+
+}
+
+
 int main(){
 
 //VARIABLE DECLERATION    
 string input;
+string inOut;
 
         while(1){
         
@@ -667,8 +863,24 @@ string input;
             //CHECK FOR TEST COMMAND
             chkForTest(input, temp);
 
-            //PROCEED TO ANALYZE INPUT
-            analyze(input);
+
+            if((input.find('|') != input.find("||")) || 
+                (input.find("<") != string::npos) || 
+                (input.find(">") != string::npos) || 
+                (input.find(">>") != string::npos)){
+                    
+               //REDIRECTORS AND PIPES
+               inOut = input;
+               parsIOVec(inOut, vecforPipe);
+               ioConnQ(inOut, redirectors);
+               piping(vecforPipe, redirectors);
+                
+            }else{
+                //PROCEED TO ANALYZE INPUT
+                analyze(input);
+                
+            }
+            
             
             
         }
