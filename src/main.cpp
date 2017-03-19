@@ -403,10 +403,10 @@ void boolChk(list<string>& connectors, queue<string>& insideQ){
     
     
     if(insideQ.front() == "exit") {
-        cout << "Exiting Rshell"<<endl;
+        cout << "Exiting Rshell..."<<endl;
         exit(0);
     }
-    cout <<endl;
+    //cout <<endl;
     chkExit(insideQ.front());
     
     boolean = execute(insideQ.front());
@@ -856,6 +856,8 @@ string inOut;
         
             cout<<"$ ";
             getline(cin, input);
+            
+            trim(input);
             
             //REMOVE ALL COMMENTS FOLLOWED BY AND INCLUDING #
             string newInput = deleteCommentAfterHack(input);
