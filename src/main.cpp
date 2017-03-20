@@ -50,7 +50,6 @@ int chkExit(string cmds){
     if(cmds == "exit"){
         cout <<"Exiting Rshell..."<<endl;
         exit(0);
-        exit(0);
     }
  
 }
