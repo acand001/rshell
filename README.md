@@ -80,7 +80,8 @@ redirector.sh			-Test for commands with redirectors <, >, and >>.
 
 ## Features
 
-After several hours of testing no known bugs appeared. Therefore, any bugs found by grader/tester will be considered "features."
+
+Known "feature to rshell is that it requires multiple input of exit from time to time."
 
 
 ## Contributors
