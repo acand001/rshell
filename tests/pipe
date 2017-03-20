@@ -1,0 +1,2 @@
+cat < input | tr A-Z a-z | tee output
+exit

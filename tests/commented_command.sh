@@ -1,3 +1,3 @@
 #!/bin/sh
 #Testing comments within input
-./bin/rshell < commented_a
+./bin/rshell/ < commented
